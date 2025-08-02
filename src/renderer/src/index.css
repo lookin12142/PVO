@@ -1,0 +1,34 @@
+@tailwind base;      /* Estilos base (reset CSS) */
+@tailwind components; /* Componentes de Tailwind */
+@tailwind utilities;  /* Clases utilitarias (text-red-500, bg-blue-100, etc.) */
+
+/* 2. ESTILOS GLOBALES (se aplican a toda la app) */
+* {
+  box-sizing: border-box; /* Hace que padding/border no agranden elementos */
+}
+
+body {
+  margin: 0;           /* Quita márgenes del navegador */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto'; /* Fuente del sistema */
+  -webkit-font-smoothing: antialiased; /* Suaviza las fuentes */
+}
+
+/* 3. ESTILOS ESPECÍFICOS PARA ELECTRON */
+html, body, #root {
+  height: 100%;        /* Ocupa toda la altura de la ventana */
+  overflow: hidden;    /* Evita scroll en la ventana principal */
+}
+
+/* 4. PERSONALIZACIÓN DE SCROLLBARS */
+::-webkit-scrollbar {
+  width: 8px;          /* Scrollbar delgada */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1; /* Color de la barra */
+  border-radius: 4px;   /* Bordes redondeados */
+}
+
+/* ANALOGÍA: */
+/* index.css = Reglas generales de tu casa */
+/* (color de paredes, tipo de piso, iluminación general) */

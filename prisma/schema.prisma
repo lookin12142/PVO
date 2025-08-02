@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./pos.db"
+}
+
+// ================================
+// PRODUCTOS E INVENTARIO
+// ================================
+model Product {
+  id          String   @id @default(cuid())
+  name        String   // Removido @unique - permite nombres duplicados
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relación con precios por categoría
+  categoryPrices CategoryPrice[]
+  
+  @@map("products")
+}
+
+// Tabla de categorías
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relación con precios
+  categoryPrices CategoryPrice[]
+  
+  @@map("categories")
+}
+
+// Tabla intermedia que maneja productos en categorías con sus precios específicos
+model CategoryPrice {
+  id         String   @id @default(cuid())
+  productId  String
+  categoryId String
+  price      Float    // Precio como Float (ej: 25.50)
+  cost       Float?   // Costo (opcional, puede ser diferente por categoría)
+  margin     Float?   // Margen de ganancia calculado
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relaciones
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Un producto solo puede tener un precio por categoría
+  @@unique([productId, categoryId])
+  @@map("category_prices")
+}
+
+// Tabla opcional para historial de precios (recomendada para análisis)
+model PriceHistory {
+  id         String   @id @default(cuid())
+  productId  String
+  categoryId String
+  oldPrice   Float    // Precio anterior
+  newPrice   Float    // Precio nuevo
+  reason     String?  // Motivo del cambio de precio
+  changedAt  DateTime @default(now())
+  changedBy  String?  // Usuario que hizo el cambio (opcional)
+
+  @@map("price_history")
+}
