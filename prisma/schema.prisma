@@ -7,66 +7,124 @@ datasource db {
   url      = "file:./pos.db"
 }
 
-// ================================
-// PRODUCTOS E INVENTARIO
-// ================================
-model Product {
-  id          String   @id @default(cuid())
-  name        String   // Removido @unique - permite nombres duplicados
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relación con precios por categoría
-  categoryPrices CategoryPrice[]
-  
-  @@map("products")
-}
-
-// Tabla de categorías
+// =======================
+// CATEGORÍAS
+// =======================
 model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String           @id @default(cuid())
+  name      String           @unique
+  prices    CategoryPrice[]
+  summaries CashClosureCategorySummary[]
 
-  // Relación con precios
-  categoryPrices CategoryPrice[]
-  
   @@map("categories")
 }
 
-// Tabla intermedia que maneja productos en categorías con sus precios específicos
+// =======================
+// PRODUCTOS (solo nombre y descripción, sin precio)
+// =======================
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  code        String?           // código opcional (para buscar rápido)
+  description String?
+  createdAt   DateTime         @default(now())
+
+  prices      CategoryPrice[]
+  sales       SaleDetail[]
+
+  @@map("products")
+}
+
+// ===========================
+// PRODUCTO + CATEGORÍA + PRECIO
+// ===========================
 model CategoryPrice {
   id         String   @id @default(cuid())
   productId  String
   categoryId String
-  price      Float    // Precio como Float (ej: 25.50)
-  cost       Float?   // Costo (opcional, puede ser diferente por categoría)
-  margin     Float?   // Margen de ganancia calculado
+  price      Float
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 
-  // Relaciones
-  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  // Un producto solo puede tener un precio por categoría
-  @@unique([productId, categoryId])
+  @@unique([productId, categoryId])  // un producto solo puede tener un precio por categoría
   @@map("category_prices")
 }
 
-// Tabla opcional para historial de precios (recomendada para análisis)
-model PriceHistory {
-  id         String   @id @default(cuid())
-  productId  String
-  categoryId String
-  oldPrice   Float    // Precio anterior
-  newPrice   Float    // Precio nuevo
-  reason     String?  // Motivo del cambio de precio
-  changedAt  DateTime @default(now())
-  changedBy  String?  // Usuario que hizo el cambio (opcional)
+// ===========================
+// INGRESOS / EGRESOS DE CAJA
+// ===========================
+model CashMovement {
+  id        String   @id @default(cuid())
+  type      String   // 'ingreso' o 'egreso'
+  amount    Float
+  note      String?  // descripción como "compra de insumos"
+  createdAt DateTime @default(now())
 
-  @@map("price_history")
+  @@map("cash_movements")
+}
+
+// ===============
+// VENTAS
+// ===============
+model Sale {
+  id          String   @id @default(cuid())
+  clientName  String?
+  total       Float
+  discount    Float?   // descuento general aplicado (% o valor)
+  type        String   // 'presencial' o 'rappi'
+  createdAt   DateTime @default(now())
+
+  details     SaleDetail[]
+
+  @@map("sales")
+}
+
+// ====================
+// DETALLES DE VENTA
+// ====================
+model SaleDetail {
+  id               String   @id @default(cuid())
+  saleId           String
+  categoryPriceId  String   // producto + categoría + precio
+  quantity         Int
+  price            Float    // precio aplicado (puede venir con descuento)
+  discount         Float?   // descuento individual aplicado
+
+  sale             Sale             @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  categoryPrice    CategoryPrice    @relation(fields: [categoryPriceId], references: [id])
+
+  @@map("sale_details")
+}
+
+// =====================
+// CIERRE DE CAJA
+// =====================
+model CashClosure {
+  id            String   @id @default(cuid())
+  totalInSystem Float
+  totalPhysical Float
+  difference    Float
+  createdAt     DateTime @default(now())
+
+  summaries     CashClosureCategorySummary[]
+
+  @@map("cash_closures")
+}
+
+// ==============================
+// RESUMEN POR CATEGORÍA EN CIERRE
+// ==============================
+model CashClosureCategorySummary {
+  id            String   @id @default(cuid())
+  cashClosureId String
+  categoryId    String
+  total         Float
+
+  cashClosure   CashClosure @relation(fields: [cashClosureId], references: [id], onDelete: Cascade)
+  category      Category    @relation(fields: [categoryId], references: [id])
+
+  @@unique([cashClosureId, categoryId])
+  @@map("cash_closure_category_summary")
 }

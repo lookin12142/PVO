@@ -33,7 +33,7 @@ class DatabaseConnection {
           }
         }
       })
-
+      
       console.log(`📁 Base de datos ubicada en: ${DATABASE_CONFIG.getDatabasePath()}`)
     }
     return this._prisma
