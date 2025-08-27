@@ -1,30 +1,106 @@
-# React + TypeScript + Vite
+# 🛒 Sistema PVO (Punto de Venta)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## ¿Qué hace este código?
 
-Currently, two official plugins are available:
+Este proyecto es un **Sistema de Punto de Venta (POS)** completo desarrollado como aplicación de escritorio usando tecnologías web modernas. El sistema está diseñado para pequeños y medianos negocios que necesitan gestionar ventas, inventario y control de caja de manera eficiente.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎯 Funcionalidades Principales
 
-## Expanding the ESLint configuration
+### 1. 📦 Gestión de Productos
+- **Crear, editar y eliminar productos** con información detallada
+- **Búsqueda rápida** por nombre, descripción o código de producto
+- **Sistema de códigos** para identificación rápida durante las ventas
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 2. 🏷️ Categorías y Precios Dinámicos
+- **Categorías de productos** personalizables
+- **Precios diferenciados** por categoría (ej: precio al por mayor, al detal, delivery)
+- **Historial de cambios de precios** para auditoría y control
 
-- Configure the top-level `parserOptions` property like this:
+### 3. 💰 Punto de Venta
+- **Interfaz intuitiva** para procesar ventas rápidamente
+- **Carrito de compras** con cálculo automático de totales
+- **Descuentos** generales e individuales por producto
+- **Soporte para diferentes tipos de venta** (presencial, delivery como Rappi)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### 4. 📊 Control de Caja
+- **Registro de ingresos y egresos** con descripciones detalladas
+- **Cierre de caja diario** con comparación entre dinero físico y sistema
+- **Resúmenes por categoría** en cada cierre de caja
+
+### 5. 📈 Reportes y Análisis
+- **Reportes de ventas** por períodos
+- **Análisis por categorías** de productos
+- **Estadísticas de rendimiento** del negocio
+
+## 🔧 Tecnologías Utilizadas
+
+### Frontend (Interfaz de Usuario)
+- **React 18** - Biblioteca principal para la interfaz de usuario
+- **TypeScript** - Tipado estático para mayor seguridad del código
+- **Tailwind CSS** - Framework CSS para diseño moderno y responsive
+- **Vite** - Herramienta de desarrollo rápida y moderna
+
+### Backend (Lógica de Negocio)
+- **Electron** - Permite ejecutar la aplicación web como aplicación de escritorio
+- **Prisma ORM** - Mapeo objeto-relacional para manejo de base de datos
+- **SQLite** - Base de datos ligera y confiable para almacenamiento local
+
+### Herramientas de Desarrollo
+- **ESLint** - Análisis de código para mantener calidad
+- **electron-builder** - Construcción de ejecutables para diferentes sistemas operativos
+
+## 🗄️ Estructura de la Base de Datos
+
+El sistema utiliza una base de datos SQLite con las siguientes entidades principales:
+
+- **Products** - Información básica de productos (nombre, descripción, código)
+- **Categories** - Categorías de productos (mayorista, detal, etc.)
+- **CategoryPrices** - Precios específicos por producto y categoría
+- **Sales** - Registro de ventas con información del cliente
+- **SaleDetails** - Detalles específicos de cada venta (productos, cantidades, precios)
+- **CashMovements** - Movimientos de caja (ingresos y egresos)
+- **CashClosures** - Cierres de caja diarios
+
+## 🚀 Cómo Ejecutar el Sistema
+
+### Instalación
+```bash
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Desarrollo
+```bash
+npm run dev
+```
+
+### Construcción para Producción
+```bash
+npm run build
+```
+
+### Inicializar Base de Datos
+```bash
+npx prisma migrate dev
+npx prisma generate
+```
+
+## 💡 Casos de Uso Típicos
+
+1. **Tienda de Abarrotes**: Gestión de productos con precios diferenciados para clientes mayoristas y minoristas
+2. **Restaurante**: Control de ingredientes y platillos con diferentes precios para delivery y consumo local
+3. **Farmacia**: Inventario de medicamentos con códigos de barras y precios especiales
+4. **Boutique**: Ropa y accesorios con categorías por temporada y descuentos especiales
+
+## 🏗️ Arquitectura del Sistema
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React (UI)    │    │  Electron Main  │    │ SQLite Database │
+│                 │◄──►│                 │◄──►│                 │
+│ - Punto de Venta│    │ - IPC Handlers  │    │ - Products      │
+│ - Inventario    │    │ - Business Logic│    │ - Sales         │
+│ - Reportes      │    │ - Database Conn │    │ - Categories    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+Este sistema demuestra cómo construir una aplicación empresarial completa usando tecnologías web modernas, proporcionando una solución robusta y escalable para la gestión de puntos de venta.

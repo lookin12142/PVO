@@ -7087,21 +7087,27 @@ function POSPage() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-b", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold", children: "Carrito de Compras" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4", children: [
-        carrito.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center text-gray-500 py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay productos en el carrito" }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: carrito.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center p-2 bg-gray-50 rounded", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-sm", children: item.nombre }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500", children: [
+        carrito.length === 0 ? (
+          // Estado vacío del carrito
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center text-gray-500 py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay productos en el carrito" }) })
+        ) : (
+          // Lista de productos en el carrito
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: carrito.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center p-2 bg-gray-50 rounded", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-sm", children: item.nombre }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500", children: [
+                "$",
+                item.precio.toFixed(2),
+                " x ",
+                item.cantidad
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-bold", children: [
               "$",
-              item.precio.toFixed(2),
-              " x ",
-              item.cantidad
+              (item.precio * item.cantidad).toFixed(2)
             ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-bold", children: [
-            "$",
-            (item.precio * item.cantidad).toFixed(2)
-          ] })
-        ] }, item.id)) }),
+          ] }, item.id)) })
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 pt-4 border-t", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between mb-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Subtotal:" }),
@@ -7140,19 +7146,28 @@ function InventoryPage() {
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold", children: "Lista de Productos" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700", children: "+ Nuevo Producto" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-12 text-gray-500", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Gestión de inventario completa" }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12 text-gray-500", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Gestión de inventario completa" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-2", children: "Incluirá: CRUD de productos, gestión de stock, alertas de inventario bajo" })
+    ] })
   ] });
 }
 function ReportsPage() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow p-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold mb-6", children: "Reportes de Ventas" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-12 text-gray-500", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Reportes y estadísticas" }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12 text-gray-500", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Reportes y estadísticas" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-2", children: "Incluirá: Ventas por período, productos más vendidos, análisis de ingresos" })
+    ] })
   ] });
 }
 function SettingsPage() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow p-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold mb-6", children: "Configuración del Sistema" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-12 text-gray-500", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Configuración de empresa, impuestos, etc." }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12 text-gray-500", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Próximamente: Configuración de empresa, impuestos, etc." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-2", children: "Incluirá: Datos de empresa, configuración de impuestos, preferencias del sistema" })
+    ] })
   ] });
 }
 client.createRoot(document.getElementById("root")).render(
