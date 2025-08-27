@@ -526,14 +526,21 @@ class ProductService {
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
+    // Ancho optimizado para punto de venta
     height: 800,
+    // Alto suficiente para mostrar productos y carrito
     show: false,
+    // No mostrar hasta que esté lista
     autoHideMenuBar: true,
+    // Ocultar barra de menú para interfaz limpia
     ...process.platform === "linux" ? {} : {},
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
+      // Script de comunicación segura
       sandbox: false,
+      // Deshabilitado para usar APIs de Node.js
       contextIsolation: true
+      // Aislamiento de contexto por seguridad
     }
   });
   mainWindow.on("ready-to-show", () => {

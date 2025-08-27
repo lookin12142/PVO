@@ -1,5 +1,6 @@
 {
   "name": "sisvm-react-ts",
+  "description": "Sistema PVO - Punto de Venta completo construido con Electron, React y TypeScript. Incluye gestión de productos, precios por categoría, ventas, control de caja y reportes.",
   "private": true,
   "version": "0.0.0",
   "type": "module",

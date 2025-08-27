@@ -1,43 +1,63 @@
+// ========================================
+// SISTEMA PVO - PROCESO PRINCIPAL ELECTRON
+// ========================================
+// Este archivo es el corazón de la aplicación Electron.
+// Gestiona la ventana principal, la comunicación IPC y la base de datos.
+
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initializeDatabase } from './database/connection'
 import { ProductService } from './services/ProductService'
 
+// ========================================
+// CREACIÓN DE VENTANA PRINCIPAL
+// ========================================
+// Configura y crea la ventana principal de la aplicación
 function createWindow(): void {
-  // Create the browser window.
+  // Crear la ventana del navegador con configuraciones optimizadas para POS
   const mainWindow = new BrowserWindow({ 
-    width: 1200,
-    height: 800,
-    show: false,
-    autoHideMenuBar: true,
+    width: 1200,              // Ancho optimizado para punto de venta
+    height: 800,              // Alto suficiente para mostrar productos y carrito
+    show: false,              // No mostrar hasta que esté lista
+    autoHideMenuBar: true,    // Ocultar barra de menú para interfaz limpia
     ...(process.platform === 'linux' ? {  } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      contextIsolation: true
+      preload: join(__dirname, '../preload/index.js'),  // Script de comunicación segura
+      sandbox: false,           // Deshabilitado para usar APIs de Node.js
+      contextIsolation: true    // Aislamiento de contexto por seguridad
     }
   })
 
+  // Mostrar ventana cuando esté lista para evitar parpadeos
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
 
+  // Abrir enlaces externos en el navegador predeterminado
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
 
+  // Cargar la aplicación React (desarrollo vs producción)
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])  // Servidor de desarrollo
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))  // Archivos construidos
   }
 }
 
+// ========================================
+// CONFIGURACIÓN DE MANEJADORES IPC
+// ========================================
+// Define todos los canales de comunicación entre frontend y backend
+// Cada manejador procesa una operación específica del sistema POS
 function setupIPCHandlers() {
   // ==================== PRODUCTOS ====================
+  // Operaciones CRUD para gestión de productos
   
+  // Obtener todos los productos con sus precios por categoría
   ipcMain.handle('productos:obtener', async () => {
     try {
       const productos = await ProductService.obtenerTodos()
@@ -49,6 +69,7 @@ function setupIPCHandlers() {
     }
   })
 
+  // Buscar productos por término (nombre o descripción)
   ipcMain.handle('productos:buscar', async (_, termino: string) => {
     try {
       const productos = await ProductService.buscar(termino)
@@ -59,6 +80,7 @@ function setupIPCHandlers() {
     }
   })
 
+  // Obtener producto específico por ID
   ipcMain.handle('productos:obtenerPorId', async (_, id: string) => {
     try {
       const producto = await ProductService.obtenerPorId(id)
@@ -69,6 +91,7 @@ function setupIPCHandlers() {
     }
   })
 
+  // Crear nuevo producto en el sistema
   ipcMain.handle('productos:crear', async (_, datos) => {
     try {
       const producto = await ProductService.crear(datos)
